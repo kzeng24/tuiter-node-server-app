@@ -4,7 +4,7 @@ import express from "express"; // creates an instance of the express library usi
 import HelloController from "./controllers/hello-controller.js";
 import UserController from "./users/users-controller.js";
 import TuitsController from "./controllers/tuits/tuits-controller.js";
-import AuthController from "./controllers/users/auth-controller.js";
+import AuthController from "./users/auth-controller.js";
 //  Cross Origin Resource Sharing -> establishes the rules by which resources can be shared across domains (origins)
 import cors from "cors";
 import session from "express-session";
@@ -24,7 +24,7 @@ app.use(
     secret: "any string",
     resave: false,
     saveUninitialized: true,
-    store: new session.MemoryStore()
+    store: new session.MemoryStore(),
   })
 );
 

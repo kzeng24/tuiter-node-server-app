@@ -1,3 +1,4 @@
+// NEW: DATA MODEL
 // data model to store user info locally in memory (will be replaced by database later)
 let users = [];
 
@@ -28,14 +29,14 @@ export const findUserByCredentials = (username, password) => {
 }
 
 export const createUser = (user) => {
-    users.push(user);
-    return user;
+    const newUser = { _id: new Date().getTime() + "", ...user };
+    users.push(newUser);
+    return newUser;
 }
 
 export const updateUser = (uid, user) => {
     const index = users.findIndex((u) => u._id === uid);
     users[index] = { ...users[index], ...user };
-    
     return { status: "ok" };
 }
 

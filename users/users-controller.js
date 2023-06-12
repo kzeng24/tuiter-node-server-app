@@ -1,9 +1,10 @@
+// OLD: sample controller that works with users.js hardcoded data
 import people from "./users.js";
 let users = people;
 
 const UserController = (app) => {
   app.get("/api/users", findUsers);
-  app.get("/api/users/:uid", findUsersById);
+  app.get("/api/users/:uid", findUserById);
   app.post("/api/users", createUser);
   app.delete("/api/users/:uid", deleteUser);
   app.put("/api/users/:uid", updateUser);
@@ -20,7 +21,7 @@ const findUsers = (req, res) => {
     }
 };
 
-const findUsersById = (req, res) => {
+const findUserById = (req, res) => {
     const uid = req.params.uid;
     const user = users.find((u) => u._id === uid);
     res.json(user);

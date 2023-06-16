@@ -1,32 +1,29 @@
 // NEW: CONTROLLER USING DATA MODEL
 import * as usersDao from "./users-dao.js";
 
-// var currentUserVar;
-
 const AuthController = (app) => {
-  const register = (req, res) => {
+  const register = async(req, res) => {
     const username = req.body.username;
-    const user = usersDao.findUserByUsername(username);
+    const existingUser = await usersDao.findUserByUsername(username);
     // return error if user already exists
-    if (user) {
+    if (existingUser) {
       res.sendStatus(409);
       return;
     }
-    const newUser = usersDao.createUser(req.body);
+    const newUserJson = { ...req.body, firstName: "", lastName: ""};
+    const newUser = await usersDao.createUser(newUserJson);
     // set user session
     req.session["currentUser"] = newUser;
-    // currentUserVar = newUser;
     res.json(newUser);
   };
 
-  const login = (req, res) => {
+  const login = async(req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    const user = usersDao.findUserByCredentials(username, password);
+    const user = await usersDao.findUserByCredentials(username, password);
     if (user) {
       // set user session
       req.session["currentUser"] = user;
-      // currentUserVar = user;
       res.json(user);
     } else {
       res.sendStatus(404);
@@ -35,7 +32,6 @@ const AuthController = (app) => {
   };
 
   const profile = (req, res) => {
-    // const currentUser = currentUserVar;
     const currentUser = req.session["currentUser"];
     if (!currentUser) {
       res.sendStatus(404);
@@ -48,23 +44,14 @@ const AuthController = (app) => {
     req.session.destroy();
     res.sendStatus(200);
   };
-  
-  const update = (req, res) => {
-    // const currentUser = currentUserVar;
-    const currentUser = req.session["currentUser"];
-    const uid = currentUser._id;
-    const user = usersDao.findUserById(uid);
-    if (user !== null) {
-      usersDao.updateUser(uid, req.body);
-      res.json(usersDao.findUserById(uid));
-    }
-  };
+
+
 
   app.post("/api/users/register", register);
   app.post("/api/users/login", login);
   app.post("/api/users/profile", profile);
   app.post("/api/users/logout", logout);
-  app.put("/api/users", update);
+
 };
 
 export default AuthController;

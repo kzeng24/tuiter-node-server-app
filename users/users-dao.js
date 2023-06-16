@@ -1,47 +1,29 @@
-// NEW: DATA MODEL
-// data model to store user info locally in memory (will be replaced by database later)
-let users = [];
+// NEW: fetch data from the database and perform actions
+import usersModel from "./users-model.js";
 
-export const findAllUsers = () => users;
+export const findAllUsers = () => usersModel.findAll();
 
 export const findUserById = (uid) => {
-    const index = users.findIndex((u) => u._id === uid);
-    if (index !== -1) {
-        return users[index];
-    }
-    return null;
+    return usersModel.findById(uid);
 }
 
 export const findUserByUsername = (username) => {
-    const index = users.findIndex((u) => u.username === username);
-    if (index!== -1) {
-        return users[index];
-    }
-    return null;
+    return usersModel.findOne({username});
 }
 
 export const findUserByCredentials = (username, password) => {
-    const index = users.findIndex((u) => u.username === username && u.password === password);
-    if (index!== -1) {
-        return users[index];
-    }
-    return null;
+    return usersModel.findOne({username, password});
 }
 
 export const createUser = (user) => {
-    const newUser = { _id: new Date().getTime() + "", ...user };
-    users.push(newUser);
-    return newUser;
+    return usersModel.create(user);
 }
 
 export const updateUser = (uid, user) => {
-    const index = users.findIndex((u) => u._id === uid);
-    users[index] = { ...users[index], ...user };
-    return { status: "ok" };
+    return usersModel.updateOne({ _id: uid }, { $set: user });
 }
 
 export const deleteUser = (uid) => {
-    const index = users.findIndex((u) => u._id === uid);
-    users.splice(index,1);
+    usersModel.deleteOne({_id: uid});
     return {status: "ok"};
 }

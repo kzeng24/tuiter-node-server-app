@@ -18,37 +18,23 @@ mongoose.connect(CONNECTION_STRING);
 
 // configures HTTP server listening for incoming requests
 const app = express();
+app.use(express.json()); // for parsing application/json (helpful when we use ...req.body from json)
 
-app.set("trust proxy", 1);
 app.use(
   // configure cors as middleware
   // restrict cross origin resource sharing to the react application
   cors({
     credentials: true,
-    // origin: "https://a6--teal-macaron-785a52.netlify.app",
     origin: "http://localhost:3000",
   }),
   // configure server session
-  // session({
-  //   secret: "any string",
-  //   resave: false,
-  //   saveUninitialized: true,
-  //   secure: true,
-  //   proxy: true,
-  // })
-    session({
+  session({
     secret: "any string",
     resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-      sameSite: "none",
-      secure: true
-    }
+    saveUninitialized: true,
+    // store: new session.MemoryStore(),
   })
 );
-
-app.use(express.json()); // for parsing application/json (helpful when we use ...req.body from json)
 
 HelloController(app);
 UserController(app);

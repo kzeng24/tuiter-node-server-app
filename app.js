@@ -29,24 +29,23 @@ app.use(
     origin: "http://localhost:3000",
   }),
   // configure server session
-  session({
-    secret: "any string",
-    resave: false,
-    saveUninitialized: true,
-    secure: true,
-    proxy: true,
-  })
-
-  //   session({
+  // session({
   //   secret: "any string",
   //   resave: false,
-  //   saveUninitialized: false,
+  //   saveUninitialized: true,
+  //   secure: true,
   //   proxy: true,
-  //   cookie: {
-  //     sameSite: "none",
-  //     secure: true
-  //   }
   // })
+    session({
+    secret: "any string",
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+      sameSite: "none",
+      secure: true
+    }
+  })
 );
 
 app.use(express.json()); // for parsing application/json (helpful when we use ...req.body from json)

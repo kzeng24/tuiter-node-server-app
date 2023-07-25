@@ -7,10 +7,6 @@ import AuthController from "./users/auth-controller.js";
 import cors from "cors";
 import session from "express-session";
 import mongoose from "mongoose"; // load the mongoose library
-import MongoStore from "connect-mongo";
-import { configDotenv } from "dotenv";
-
-configDotenv();
 
 // Node.js server uses the controllers to talk to the user interface and the DAOs to talk to the database.
 // The server sits between these two layers so it is referred to as the middle tier in a multi tiered application.
@@ -24,32 +20,20 @@ mongoose.connect(CONNECTION_STRING);
 const app = express();
 
 app.use(
+  // configure cors as middleware
+  // restrict cross origin resource sharing to the react application
+  cors({
+    credentials: true,
+    origin: true,
+  }),
+  // configure server session
   session({
     secret: "any string",
     resave: false,
     saveUninitialized: true,
-    rolling: true,
-    cookie: {
-      sameSite: "none", // the important part
-      secure: false, // the important part, changed for local testing
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-    store: MongoStore.create({
-      mongoUrl: CONNECTION_STRING,
-      ttl: 14 * 24 * 60 * 60, // = 14 days. Default
-    }),
+    // store: new session.MemoryStore(),
   })
 );
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, PUT, POST, DELETE, PATCH, OPTIONS"
-  );
-  next();
-});
 
 app.use(express.json()); // for parsing application/json (helpful when we use ...req.body from json)
 
